@@ -26,12 +26,18 @@ const elements = {
   list: document.querySelector("#todo-list"),
   emptyState: document.querySelector("#empty-state"),
   emptyMessage: document.querySelector("#empty-message"),
+  deleteDialog: document.querySelector("#delete-dialog"),
+  deleteTodoText: document.querySelector("#delete-todo-text"),
+  cancelDelete: document.querySelector("#cancel-delete"),
+  confirmDelete: document.querySelector("#confirm-delete"),
 };
 
 const state = {
   todos: [],
   filter: "ALL",
   editingId: null,
+  pendingDeleteId: null,
+  deleteTrigger: null,
   storageAvailable: true,
   idSequence: 0,
 };
@@ -149,6 +155,31 @@ function formatDateTime(value) {
 function createTodoId() {
   state.idSequence += 1;
   return `todo_${Date.now()}_${state.idSequence}`;
+}
+
+function burstConfetti(origin) {
+  if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+    return;
+  }
+
+  const bounds = origin.getBoundingClientRect();
+  const layer = createElement("div", "confetti-layer");
+  layer.setAttribute("aria-hidden", "true");
+  const colors = ["#f472b6", "#facc15", "#34d399", "#60a5fa", "#a78bfa", "#fb923c"];
+
+  for (let index = 0; index < 28; index += 1) {
+    const piece = createElement("span", "confetti-piece");
+    piece.style.setProperty("--confetti-left", `${bounds.left + bounds.width / 2}px`);
+    piece.style.setProperty("--confetti-top", `${bounds.top + bounds.height / 2}px`);
+    piece.style.setProperty("--confetti-x", `${Math.random() * 220 - 110}px`);
+    piece.style.setProperty("--confetti-y", `${Math.random() * 150 + 45}px`);
+    piece.style.setProperty("--confetti-rotation", `${Math.random() * 720 - 360}deg`);
+    piece.style.setProperty("--confetti-color", colors[index % colors.length]);
+    layer.append(piece);
+  }
+
+  document.body.append(layer);
+  window.setTimeout(() => layer.remove(), 1400);
 }
 
 function getVisibleTodos() {
@@ -411,15 +442,36 @@ function handleListClick(event) {
     render();
   } else if (action === "delete") {
     const todo = state.todos.find((entry) => entry.id === item.dataset.todoId);
-    if (todo && window.confirm("이 할 일을 삭제하시겠습니까?")) {
-      state.todos = state.todos.filter((entry) => entry.id !== todo.id);
-      if (state.editingId === todo.id) {
-        state.editingId = null;
-      }
-      saveTodos();
-      render();
+    if (todo) {
+      state.pendingDeleteId = todo.id;
+      state.deleteTrigger = button;
+      elements.deleteTodoText.textContent = todo.text;
+      elements.deleteDialog.showModal();
+      elements.confirmDelete.focus();
     }
   }
+}
+
+function closeDeleteDialog() {
+  if (elements.deleteDialog.open) {
+    elements.deleteDialog.close();
+  }
+}
+
+function confirmDelete() {
+  const todo = state.todos.find((entry) => entry.id === state.pendingDeleteId);
+  closeDeleteDialog();
+  if (!todo) {
+    return;
+  }
+
+  state.todos = state.todos.filter((entry) => entry.id !== todo.id);
+  if (state.editingId === todo.id) {
+    state.editingId = null;
+  }
+  saveTodos();
+  render();
+  elements.textInput.focus();
 }
 
 function handleListChange(event) {
@@ -433,6 +485,9 @@ function handleListChange(event) {
     return;
   }
   todo.completed = checkbox.checked;
+  if (todo.completed) {
+    burstConfetti(checkbox);
+  }
   saveTodos();
   render();
 }
@@ -474,6 +529,23 @@ elements.list.addEventListener("click", handleListClick);
 elements.list.addEventListener("change", handleListChange);
 elements.list.addEventListener("submit", handleListSubmit);
 elements.list.addEventListener("input", handleEditInput);
+elements.cancelDelete.addEventListener("click", closeDeleteDialog);
+elements.confirmDelete.addEventListener("click", confirmDelete);
+elements.deleteDialog.addEventListener("click", (event) => {
+  if (event.target === elements.deleteDialog) {
+    closeDeleteDialog();
+  }
+});
+elements.deleteDialog.addEventListener("close", () => {
+  state.pendingDeleteId = null;
+  elements.deleteTodoText.textContent = "";
+  if (state.deleteTrigger?.isConnected) {
+    state.deleteTrigger.focus();
+  } else {
+    elements.textInput.focus();
+  }
+  state.deleteTrigger = null;
+});
 
 elements.today.textContent = new Intl.DateTimeFormat("ko-KR", {
   year: "numeric",

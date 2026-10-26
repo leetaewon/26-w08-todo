@@ -100,6 +100,31 @@
           </div>
         </section>
       </section>
+      <dialog id="delete-dialog" class="delete-dialog w-[calc(100%-2rem)] max-w-md rounded-3xl border-0 bg-white p-0 text-slate-800 shadow-2xl backdrop:bg-slate-950/50" aria-labelledby="delete-dialog-title" aria-describedby="delete-dialog-description">
+        <div class="p-6 sm:p-8">
+          <div class="despair-icon mx-auto mb-5 grid size-28 place-items-center rounded-full" role="img" aria-label="금빛 장식에 둘러싸인 슬픈 얼굴">
+            <svg viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="56" fill="#f8edcc" stroke="#bc8d2d" stroke-width="2"/>
+              <path d="M60 8 66 20 78 11 79 26 94 22 89 37 105 40 95 52 109 62 95 71 103 86 87 88 89 104 74 99 66 113 57 101 44 110 41 94 25 96 31 81 16 74 27 62 13 52 28 43 21 28 37 29 39 13 52 21Z" fill="#e7c56b" opacity=".82"/>
+              <path d="M39 36c4-8 12-12 22-12s18 4 22 12l7 18-7 28c-4 14-13 21-22 21s-18-7-22-21l-7-28Z" fill="#f4dfbd" stroke="#76592c" stroke-width="2"/>
+              <path d="M38 42c3-17 14-25 25-25 13 0 22 8 25 24l-10-8-8 7-11-8-9 9-8-5Z" fill="#403325"/>
+              <path d="M45 56c4-4 9-4 13 0m5 0c4-4 9-4 13 0" fill="none" stroke="#493b31" stroke-linecap="round" stroke-width="3"/>
+              <path d="M60 59c-2 8-4 12-4 15 0 3 2 5 4 5s4-2 4-5c0-3-2-7-4-15Z" fill="#8ab6bd"/>
+              <path d="M50 84c6 4 14 4 20 0" fill="none" stroke="#765044" stroke-linecap="round" stroke-width="2.5"/>
+              <path d="m25 49 6 4-5 6-6-4Zm70 9 6-4 4 7-6 4ZM37 92l7 2-2 7-7-2Zm43 5 6-5 5 6-6 5Z" fill="#fff7d7" stroke="#bc8d2d"/>
+              <circle cx="24" cy="73" r="3" fill="#98702b"/><circle cx="96" cy="35" r="3" fill="#98702b"/>
+            </svg>
+          </div>
+          <p class="mb-1 text-center text-sm font-semibold uppercase tracking-widest text-amber-700">작별 인사</p>
+          <h2 id="delete-dialog-title" class="text-center text-2xl font-bold text-slate-900">정말 삭제할까요?</h2>
+          <p id="delete-dialog-description" class="mt-2 text-center text-slate-600">이 할 일을 목록에서 영구적으로 삭제합니다.</p>
+          <p id="delete-todo-text" class="delete-todo-text mt-4 rounded-xl bg-slate-50 px-4 py-3 text-center font-semibold text-slate-700"></p>
+          <div class="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+            <button id="cancel-delete" class="min-h-11 rounded-xl border border-slate-300 px-5 py-2.5 font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-slate-200" type="button">취소</button>
+            <button id="confirm-delete" class="min-h-11 rounded-xl bg-rose-600 px-5 py-2.5 font-semibold text-white transition hover:bg-rose-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-rose-200" type="button">삭제</button>
+          </div>
+        </div>
+      </dialog>
       <p class="mt-5 text-center text-sm text-slate-400">할 일을 하나씩 완료하며 오늘을 채워보세요.</p>
     </main>
   </body>

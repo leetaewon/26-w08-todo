@@ -223,6 +223,79 @@ body {
   gap: 0.5rem;
 }
 
+.delete-dialog[open] {
+  animation: dialog-enter 160ms ease-out both;
+}
+
+.delete-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(3px);
+}
+
+.delete-todo-text {
+  overflow-wrap: anywhere;
+}
+
+.despair-icon {
+  background: repeating-conic-gradient(#f6e8bd 0 12deg, #e6cf8b 12deg 24deg);
+  box-shadow: 0 8px 24px rgba(151, 111, 36, 0.18);
+}
+
+.despair-icon svg {
+  width: 100%;
+  height: 100%;
+  padding: 0.35rem;
+}
+
+.confetti-layer {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: var(--confetti-top);
+  left: var(--confetti-left);
+  width: 0.55rem;
+  height: 0.8rem;
+  border-radius: 2px;
+  background: var(--confetti-color);
+  animation: confetti-burst 1.15s cubic-bezier(0.12, 0.65, 0.35, 1) both;
+}
+
+.confetti-piece:nth-child(3n) {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+}
+
+.confetti-piece:nth-child(4n) {
+  width: 0.35rem;
+  height: 0.9rem;
+}
+
+@keyframes confetti-burst {
+  to {
+    opacity: 0;
+    transform: translate3d(var(--confetti-x), var(--confetti-y), 0) rotate(var(--confetti-rotation));
+  }
+}
+
+@keyframes dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 640px) {
   .input-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -264,5 +337,10 @@ body {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .confetti-piece,
+  .delete-dialog[open] {
+    animation: none !important;
   }
 }
