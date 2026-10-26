@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f5f7fb">
+    <title>To-Do List</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+    <main class="mx-auto w-full max-w-4xl px-4 py-8 sm:px-6 sm:py-12">
+      <div id="storage-alert" class="storage-alert mb-4 rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-900" role="alert" hidden></div>
+
+      <section class="rounded-3xl bg-white p-5 shadow-xl shadow-slate-200/60 sm:p-9" aria-labelledby="app-title">
+        <header class="mb-8">
+          <div class="mb-7 flex items-start justify-between gap-4">
+            <div>
+              <p class="mb-2 text-xs font-bold uppercase tracking-widest text-indigo-600">오늘도 차근차근</p>
+              <h1 id="app-title" class="text-3xl font-bold tracking-tight text-slate-900">To-Do List</h1>
+              <p id="today-date" class="mt-1 text-sm text-slate-500"></p>
+            </div>
+            <span class="grid size-12 shrink-0 place-items-center rounded-2xl bg-indigo-50 text-2xl font-extrabold text-indigo-600" aria-hidden="true">✓</span>
+          </div>
+
+          <div class="rounded-2xl bg-slate-50 p-4">
+            <div class="mb-2 flex items-center justify-between gap-3">
+              <span class="font-semibold text-slate-700">오늘의 진행률</span>
+              <span id="progress-label" class="text-sm text-slate-500" aria-live="polite">0/0 완료 (0%)</span>
+            </div>
+            <div
+              id="progress-bar"
+              class="h-3 overflow-hidden rounded-full bg-slate-200"
+              role="progressbar"
+              aria-label="할 일 진행률"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+            >
+              <div class="progress-fill h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 transition-[width] duration-200"></div>
+            </div>
+          </div>
+        </header>
+
+        <section class="mb-8 rounded-2xl border border-indigo-100 bg-indigo-50/50 p-4 sm:p-5" aria-labelledby="add-todo-heading">
+          <h2 id="add-todo-heading" class="mb-4 text-lg font-bold text-slate-800">새로운 할 일</h2>
+          <form id="todo-form" novalidate>
+            <div class="input-grid">
+              <div class="todo-text-field">
+                <label for="todo-text" class="mb-1.5 block text-sm font-semibold text-slate-600">할 일 내용</label>
+                <input
+                  id="todo-text"
+                  name="text"
+                  class="field-control w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100"
+                  type="text"
+                  placeholder="새로운 할 일을 입력하세요"
+                  maxlength="500"
+                  aria-describedby="todo-error"
+                  autocomplete="off"
+                >
+                <div id="todo-error" class="input-error mt-1 text-sm text-red-600" aria-live="polite"></div>
+              </div>
+              <div>
+                <label for="todo-due-date" class="mb-1.5 block text-sm font-semibold text-slate-600">마감 일시</label>
+                <input id="todo-due-date" name="dueDateTime" class="field-control w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100" type="datetime-local">
+              </div>
+              <div>
+                <label for="todo-priority" class="mb-1.5 block text-sm font-semibold text-slate-600">우선순위</label>
+                <select id="todo-priority" name="priority" class="field-control w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-base text-slate-800 outline-none transition focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100">
+                  <option value="HIGH">높음</option>
+                  <option value="MEDIUM" selected>보통</option>
+                  <option value="LOW">낮음</option>
+                </select>
+              </div>
+              <button class="add-button inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 font-bold text-white transition hover:bg-indigo-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200" type="submit">
+                <span aria-hidden="true">＋</span>
+                추가
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section aria-label="할 일 목록">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2 class="text-xl font-bold text-slate-900">내 할 일</h2>
+            <p class="text-sm text-slate-500">작은 한 걸음이 큰 변화를 만들어요.</p>
+          </div>
+
+          <div class="todo-tabs mb-4 grid grid-cols-3 border-b border-slate-200" role="tablist" aria-label="할 일 상태 필터">
+            <button class="tab-button active min-h-11 px-2 py-2.5 text-sm font-semibold text-slate-500 transition hover:text-indigo-600 sm:text-base" id="filter-all" type="button" role="tab" aria-selected="true" aria-controls="todo-list" data-filter="ALL">전체 <span class="tab-count" data-count="ALL">0</span></button>
+            <button class="tab-button min-h-11 px-2 py-2.5 text-sm font-semibold text-slate-500 transition hover:text-indigo-600 sm:text-base" id="filter-active" type="button" role="tab" aria-selected="false" aria-controls="todo-list" data-filter="ACTIVE" tabindex="-1">진행 중 <span class="tab-count" data-count="ACTIVE">0</span></button>
+            <button class="tab-button min-h-11 px-2 py-2.5 text-sm font-semibold text-slate-500 transition hover:text-indigo-600 sm:text-base" id="filter-completed" type="button" role="tab" aria-selected="false" aria-controls="todo-list" data-filter="COMPLETED" tabindex="-1">완료 <span class="tab-count" data-count="COMPLETED">0</span></button>
+          </div>
+
+          <ul id="todo-list" class="todo-list m-0 list-none p-0" role="list" aria-live="polite"></ul>
+          <div id="empty-state" class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-10 text-center text-slate-500" hidden>
+            <div class="mb-3 text-3xl text-indigo-400" aria-hidden="true">✦</div>
+            <p id="empty-message" class="m-0"></p>
+          </div>
+        </section>
+      </section>
+      <p class="mt-5 text-center text-sm text-slate-400">할 일을 하나씩 완료하며 오늘을 채워보세요.</p>
+    </main>
+  </body>
+</html>
